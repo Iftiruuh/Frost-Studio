@@ -1,132 +1,82 @@
-# Frost Studio — Customer Order System
+# Frost Studio — Final Website
 
-This is the working customer-order version of the Frost Studio website.
+This is the clean final Frost Studio website package.
+
+## Final GitHub structure
+
+Frost-Studio/
+├── package.json
+├── server.js
+├── README.md
+├── public/
+│   ├── index.html
+│   ├── admin.html
+│   └── frost-studio-logo.jpeg
+└── data/
+    └── orders.json
+
+Total: 7 files.
 
 ## Customer flow
 
-1. Browse the menu.
-2. Click **Add to Order** on any cake, brownie, or donut.
-3. Increase/decrease quantity.
-4. Enter name, mobile number, required date/time.
-5. Choose pickup or delivery.
-6. Add a cake message and custom instructions.
-7. Optionally upload one reference image (maximum 5 MB).
-8. Submit the order request.
-9. Receive a Frost Studio order number such as `FS-260910-1234`.
+Menu → + / − quantity → View Cart → one Checkout form → customer details →
+pickup/delivery → cake instructions/reference image → bKash details → Submit Order
 
-Menu prices are re-checked by the server so customers cannot change prices in the browser.
+There is only ONE submission form.
 
-## Pickup address
+## bKash
+
+Temporary manual bKash number shown on the website:
+
+01712 108397
+
+The customer submits:
+- paying bKash number
+- amount paid
+- TrxID
+
+The payment is stored as Awaiting verification until Frost Studio checks it manually.
+
+The website never asks for a bKash PIN, OTP, or password.
+
+## Pickup
 
 148 No. Distillery Road, Katherpul, Dhaka 1100
-
-## Delivery
-
-Delivery charge is not invented or automatically added. Frost Studio confirms the delivery charge separately based on the customer's location.
 
 ## Owner dashboard
 
 Open:
 
-`/admin.html`
+/admin.html
 
-The dashboard asks for the `ADMIN_KEY` configured in `.env`.
+Use the ADMIN_KEY already configured in Railway.
 
-It displays:
-- order number
-- customer name and phone
-- requested date/time
-- pickup/delivery
-- ordered products and quantities
-- menu subtotal
-- cake message
-- custom instructions
-- uploaded reference image
+## Railway
 
-## Run locally
+Keep these Railway variables:
 
-1. Install Node.js 18 or later.
-2. Open this project folder in Terminal.
-3. Run:
+ADMIN_KEY = your private owner key
+STORAGE_ROOT = /app/storage
 
-   npm install
+Keep the Railway volume mounted at:
 
-4. Copy `.env.example` to `.env`.
-5. Change `ADMIN_KEY` to a private value.
-6. Run:
+/app/storage
 
-   npm start
+## Updating GitHub
 
-7. Customer website:
-   http://localhost:3000
+For the cleanest repository, remove old duplicate/root copies and old update-guide files,
+then upload the seven files in this package in the exact folder structure shown above.
 
-8. Owner dashboard:
-   http://localhost:3000/admin.html
-
-## Important before public launch
-
-This version saves orders to `data/orders.json` and reference images to `uploads/`.
-
-For a small first launch on a normal persistent Node server this can work. For a larger or serverless deployment, move orders and uploads to a managed database/storage service.
-
-## Facebook
-
-Facebook buttons remain placeholders until Frost Studio's Facebook page is created. Once the page URL exists, replace the placeholder links with the real Facebook/Messenger URL.
-
-## bKash
-
-bKash remains intentionally inactive until Frost Studio has an official bKash Merchant setup/API credentials.
-
-The website must never ask customers for their bKash PIN or OTP.
+Railway should redeploy automatically after the GitHub commit.
 
 
-## Railway-ready deployment
+## Customer support
 
-This package is configured to use a single persistent storage root.
+The website includes:
+- WhatsApp support button using 01975 108397
+- pre-filled WhatsApp support message
+- dedicated Customer Support section
+- floating WhatsApp chat button on every page position
+- Facebook support placeholder ready for the future Frost Studio Facebook page
 
-Set these Railway variables:
-
-- `ADMIN_KEY` = your private owner-dashboard key
-- `STORAGE_ROOT` = `/app/storage`
-
-Then attach one Railway volume at:
-
-`/app/storage`
-
-Both orders and customer reference-image uploads will be stored underneath that volume.
-See `DEPLOYMENT_GUIDE.txt` for beginner step-by-step instructions.
-
-
-## Temporary manual bKash payment
-
-Receiving number shown to customers: `01712108397`
-
-The customer pays only after the order is confirmed, then submits:
-- Frost Studio order number
-- paying bKash number
-- amount
-- TrxID
-
-The owner dashboard displays the submission as `Awaiting verification`.
-
-This is a manual workflow, not an automated bKash gateway.
-Never ask customers for their bKash PIN, OTP, or password.
-
-
-## Unified cart checkout
-Customers now use +/− on products, open one cart, and complete customer details plus bKash payment in one checkout form. There are no separate order and payment forms.
-
-
-## Single checkout form
-
-The checkout is now one single form/card.
-
-Order flow:
-1. Review cart
-2. Enter customer details
-3. Choose pickup/delivery
-4. Add optional cake message/reference image
-5. Enter bKash payment details
-6. Press one `Submit Order` button
-
-There is no separate order-submission form and no separate payment-submission form.
+When the Facebook page is created, replace the placeholder Facebook URL with the real page/Messenger link.
