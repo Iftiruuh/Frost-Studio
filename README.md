@@ -78,36 +78,3 @@ Facebook buttons remain placeholders until Frost Studio's Facebook page is creat
 bKash remains intentionally inactive until Frost Studio has an official bKash Merchant setup/API credentials.
 
 The website must never ask customers for their bKash PIN or OTP.
-
-
-## Railway-ready deployment
-
-This package is configured to use a single persistent storage root.
-
-Set these Railway variables:
-
-- `ADMIN_KEY` = your private owner-dashboard key
-- `STORAGE_ROOT` = `/app/storage`
-
-Then attach one Railway volume at:
-
-`/app/storage`
-
-Both orders and customer reference-image uploads will be stored underneath that volume.
-See `DEPLOYMENT_GUIDE.txt` for beginner step-by-step instructions.
-
-
-## Temporary manual bKash payment
-
-Receiving number shown to customers: `01712108397`
-
-The customer pays only after the order is confirmed, then submits:
-- Frost Studio order number
-- paying bKash number
-- amount
-- TrxID
-
-The owner dashboard displays the submission as `Awaiting verification`.
-
-This is a manual workflow, not an automated bKash gateway.
-Never ask customers for their bKash PIN, OTP, or password.

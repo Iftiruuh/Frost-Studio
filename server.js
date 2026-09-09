@@ -7,9 +7,8 @@ const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const STORAGE_ROOT = process.env.STORAGE_ROOT || __dirname;
-const DATA_DIR = path.join(STORAGE_ROOT, 'data');
-const UPLOAD_DIR = path.join(STORAGE_ROOT, 'uploads');
+const DATA_DIR = path.join(__dirname, 'data');
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -189,60 +188,13 @@ app.get('/api/admin/orders', (req, res) => {
   res.json({ orders: readOrders() });
 });
 
-
-// Temporary manual bKash payment confirmation.
-// This is NOT an automated bKash gateway.
-// The site never collects PINs, OTPs, or passwords.
-app.post('/api/payments/manual-bkash', (req, res) => {
-  try {
-    const orderId = clean(req.body.orderId, 40);
-    const payerBkashNumber = clean(req.body.payerBkashNumber, 20);
-    const trxId = clean(req.body.trxId, 40).toUpperCase();
-    const amount = Number(req.body.amount);
-
-    if (!orderId || !payerBkashNumber || !trxId || !Number.isFinite(amount) || amount <= 0) {
-      return res.status(400).json({ error: 'Please provide valid payment details.' });
-    }
-
-    const orders = readOrders();
-    const order = orders.find(o => o.orderId === orderId);
-
-    if (!order) {
-      return res.status(404).json({ error: 'Order number not found.' });
-    }
-
-    const duplicate = orders.find(o =>
-      o.payment &&
-      String(o.payment.trxId || '').toUpperCase() === trxId &&
-      o.orderId !== orderId
-    );
-
-    if (duplicate) {
-      return res.status(409).json({ error: 'This TrxID has already been submitted for another order.' });
-    }
-
-    order.payment = {
-      method: 'Manual bKash',
-      receivingNumber: '01712108397',
-      payerBkashNumber,
-      amount,
-      trxId,
-      submittedAt: new Date().toISOString(),
-      status: 'Awaiting verification'
-    };
-
-    order.paymentStatus = 'Awaiting verification';
-    writeOrders(orders);
-
-    res.json({
-      orderId: order.orderId,
-      trxId,
-      paymentStatus: order.paymentStatus
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Unable to save payment confirmation.' });
-  }
+// Frost Studio — bKash only.
+// Live merchant checkout intentionally remains disabled until official
+// bKash Merchant API credentials are connected.
+app.post('/api/pay', (_req, res) => {
+  return res.status(503).json({
+    error: 'bKash merchant checkout is not connected yet.'
+  });
 });
 
 app.use((err, _req, res, _next) => {
