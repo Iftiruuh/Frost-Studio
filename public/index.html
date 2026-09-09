@@ -493,7 +493,7 @@
       
       <a href="#order">How to Order</a>
       <a href="#customer-order">Order</a>
-      <a href="#payment">Pay with bKash</a>
+      <a href="#payment">bKash Payment</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </div>
@@ -848,65 +848,53 @@
     </div>
   </section>
 
+
 <section id="payment">
-    <div class="section-inner">
-      <div class="eyebrow">Secure Payment</div>
-      <h2>Pay with bKash</h2>
-      <p class="muted">Only make a bKash payment after Frost Studio has confirmed your order and payment amount.</p>
+  <div class="section-inner">
+    <div class="eyebrow">Manual bKash Payment</div>
+    <h2>Pay your confirmed Frost Studio order</h2>
+    <p class="muted">Only make payment after Frost Studio has confirmed your order and final amount.</p>
 
-      <div class="payment-wrap">
-        <div>
-          <div class="card">
-            <h3>bKash Payment</h3>
-            <div class="payment-methods" style="grid-template-columns:1fr">
-              <div class="method">bKash Only</div>
-            </div>
-            <div class="secure-note">
-              🔒 Frost Studio will never ask for your bKash PIN or OTP. Complete payment only through the official bKash checkout.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Order payment</h3>
-          <form id="paymentForm">
-            <label>
-              Order / Invoice Number
-              <input id="orderId" name="orderId" type="text" maxlength="40" placeholder="e.g. FS-1024" required />
-            </label>
-            <label>
-              Your Name
-              <input id="name" name="name" type="text" maxlength="50" required />
-            </label>
-            <label>
-              Email
-              <input id="email" name="email" type="email" maxlength="50" required />
-            </label>
-            <label>
-              Mobile Number
-              <input id="phone" name="phone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required />
-            </label>
-            <label>
-              City
-              <input id="city" name="city" type="text" maxlength="50" placeholder="Dhaka" required />
-            </label>
-            <label>
-              Address
-              <textarea id="address" name="address" maxlength="100" placeholder="Customer address"></textarea>
-            </label>
-            <label>
-              Payment Amount (BDT)
-              <input id="amount" name="amount" type="number" min="10" step="0.01" placeholder="e.g. 1500" required />
-            </label>
-
-            <button class="btn btn-primary full" type="submit" id="payButton">Continue to bKash</button>
-            <p class="small">The amount should match the quotation sent to you by Frost Studio.</p>
-          </form>
-          <div id="status" class="status"></div>
+    <div class="payment-wrap">
+      <div class="card">
+        <h3>bKash payment number</h3>
+        <div style="font-family:Georgia,serif;font-size:34px;font-weight:700;color:#4a342c;margin:14px 0">01712 108397</div>
+        <p><strong>Temporary manual payment</strong></p>
+        <p class="small">Use this number only after your order is confirmed.</p>
+        <div class="secure-note">
+          🔒 Frost Studio will never ask for your bKash PIN, OTP, or password.
+          After paying, submit your transaction details using the form beside this box.
         </div>
       </div>
+
+      <div class="card">
+        <h3>Submit payment confirmation</h3>
+        <form id="manualPaymentForm">
+          <label>
+            Frost Studio Order Number
+            <input id="paymentOrderId" type="text" maxlength="40" placeholder="e.g. FS-260910-1234" required>
+          </label>
+          <label>
+            Your bKash Number
+            <input id="payerBkashNumber" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required>
+          </label>
+          <label>
+            Amount Paid (৳)
+            <input id="paymentAmount" type="number" min="1" step="0.01" required>
+          </label>
+          <label>
+            bKash Transaction ID (TrxID)
+            <input id="paymentTrxId" type="text" maxlength="40" placeholder="Enter the TrxID from bKash" required>
+          </label>
+          <button class="btn btn-primary full" type="submit" id="submitPaymentBtn">Submit Payment Details</button>
+          <p class="small">Payment remains unverified until Frost Studio checks the transaction in bKash.</p>
+        </form>
+        <div id="paymentSubmitStatus" class="status"></div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <section id="about" class="soft">
     <div class="section-inner">
@@ -940,6 +928,7 @@
 </footer>
 
 <script>
+
   // -----------------------------
   // Frost Studio customer cart
   // -----------------------------
@@ -1117,59 +1106,60 @@
   });
 
   // -----------------------------
-  // bKash payment placeholder
+  // Manual bKash payment confirmation
   // -----------------------------
-  const paymentForm = document.getElementById('paymentForm');
-  const statusBox = document.getElementById('status');
-  const payButton = document.getElementById('payButton');
+  const manualPaymentForm = document.getElementById('manualPaymentForm');
+  const paymentSubmitStatus = document.getElementById('paymentSubmitStatus');
+  const submitPaymentBtn = document.getElementById('submitPaymentBtn');
 
-  function showStatus(message, type) {
-    statusBox.textContent = message;
-    statusBox.className = 'status ' + type;
+  function showPaymentStatus(message, type) {
+    paymentSubmitStatus.textContent = message;
+    paymentSubmitStatus.className = 'status ' + type;
   }
 
-  if (paymentForm) {
-    paymentForm.addEventListener('submit', async (event) => {
+  if (manualPaymentForm) {
+    manualPaymentForm.addEventListener('submit', async (event) => {
       event.preventDefault();
-      statusBox.className = 'status';
 
       const payload = {
-        orderId: document.getElementById('orderId').value.trim(),
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        city: document.getElementById('city').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        amount: Number(document.getElementById('amount').value)
+        orderId: document.getElementById('paymentOrderId').value.trim(),
+        payerBkashNumber: document.getElementById('payerBkashNumber').value.trim(),
+        amount: Number(document.getElementById('paymentAmount').value),
+        trxId: document.getElementById('paymentTrxId').value.trim()
       };
 
-      if (!payload.orderId || !payload.name || !payload.email || !payload.phone || !payload.city || !payload.amount) {
-        showStatus('Please complete all required fields.', 'error');
+      if (!payload.orderId || !payload.payerBkashNumber || !payload.amount || !payload.trxId) {
+        showPaymentStatus('Please complete all payment fields.', 'error');
         return;
       }
 
-      payButton.disabled = true;
-      payButton.textContent = 'Opening bKash checkout…';
+      submitPaymentBtn.disabled = true;
+      submitPaymentBtn.textContent = 'Submitting…';
 
       try {
-        const response = await fetch('/api/pay', {
+        const response = await fetch('/api/payments/manual-bkash', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(payload)
         });
 
         const data = await response.json();
-        if (!response.ok || !data.paymentUrl) {
-          throw new Error(data.error || 'Unable to start bKash payment.');
-        }
-        window.location.href = data.paymentUrl;
+        if (!response.ok) throw new Error(data.error || 'Unable to submit payment details.');
+
+        showPaymentStatus(
+          `Payment details submitted for ${data.orderId}. Frost Studio will verify TrxID ${data.trxId}.`,
+          'success'
+        );
+        manualPaymentForm.reset();
       } catch (error) {
-        showStatus('bKash payment is not active yet. ' + error.message, 'error');
-        payButton.disabled = false;
-        payButton.textContent = 'Continue to bKash';
+        showPaymentStatus(error.message, 'error');
+      } finally {
+        submitPaymentBtn.disabled = false;
+        submitPaymentBtn.textContent = 'Submit Payment Details';
       }
     });
   }
+
 </script>
 </body>
 </html>

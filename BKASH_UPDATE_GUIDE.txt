@@ -1,0 +1,23 @@
+FROST STUDIO — MANUAL BKASH UPDATE
+
+bKash receiving number:
+01712 108397
+
+HOW TO UPDATE THE LIVE WEBSITE
+1. Unzip this package.
+2. Open your GitHub Frost-Studio repository.
+3. Replace/upload these files:
+   public/index.html
+   public/admin.html
+   server.js
+   README.md
+4. Commit changes.
+5. Railway should automatically redeploy.
+6. Wait for Railway deployment to show Success.
+7. Open your live website and test the bKash Payment section.
+8. Use a test order and fake payment details first. Do not send money for the test.
+9. Open /admin.html and check that the payment submission appears.
+
+IMPORTANT
+- Never ask customers for bKash PIN, OTP, or password.
+- A submitted TrxID means Awaiting verification, not automatically Paid.
