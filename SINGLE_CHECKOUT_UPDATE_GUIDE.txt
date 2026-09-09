@@ -1,0 +1,17 @@
+FROST STUDIO — SINGLE CHECKOUT FORM UPDATE
+
+This update removes the two-panel/two-submission appearance.
+
+Customer now sees ONE form:
+Cart → Customer Details → Pickup/Delivery → bKash Payment → Submit Order
+
+TO UPDATE LIVE WEBSITE
+1. Unzip this package.
+2. In your GitHub Frost-Studio repository replace:
+   public/index.html
+   README.md
+3. Commit changes.
+4. Railway redeploys automatically.
+5. Wait for Success, then refresh the live website.
+
+server.js does not need changing for this visual update because the unified checkout API is already in place.

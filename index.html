@@ -794,66 +794,129 @@
 
 
   
+
 <section id="checkout" class="soft">
   <div class="section-inner">
     <div class="eyebrow">Cart & Checkout</div>
     <h2>Complete your Frost Studio order</h2>
-    <p class="muted">Choose quantities with + and −, review your cart, then complete customer details and bKash payment in one checkout.</p>
-    <div class="checkout-layout">
-      <div class="checkout-card">
-        <h3>Your Cart</h3>
-        <div id="checkoutCartList"><div class="cart-empty">Your cart is empty.</div></div>
+    <p class="muted">Everything is completed below in one form: your cart, customer details, delivery or pickup, and bKash payment.</p>
+
+    <div class="checkout-card" style="max-width:850px;margin:28px auto 0">
+      <form id="unifiedCheckoutForm">
+
+        <h3>1. Your Cart</h3>
+        <div id="checkoutCartList">
+          <div class="cart-empty">Your cart is empty.</div>
+        </div>
+
         <div class="summary-box">
           <div class="summary-row"><span>Items subtotal</span><strong id="checkoutSubtotal">৳0</strong></div>
           <div class="summary-row"><span>Delivery</span><span>Confirmed separately</span></div>
           <div class="summary-row summary-total"><span>Current total</span><strong id="checkoutTotal">৳0</strong></div>
         </div>
-        <div class="buttons"><a class="btn btn-secondary" href="#menu">Continue Shopping</a></div>
-      </div>
 
-      <div class="checkout-card">
-        <h3>Customer & Payment Details</h3>
-        <form id="unifiedCheckoutForm">
-          <div class="form-grid-2">
-            <label>Full Name<input id="checkoutName" type="text" maxlength="80" required></label>
-            <label>Mobile Number<input id="checkoutPhone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required></label>
-          </div>
-          <div class="form-grid-2">
-            <label>Required Date<input id="checkoutDate" type="date" required></label>
-            <label>Preferred Time<input id="checkoutTime" type="time" required></label>
-          </div>
+        <div style="height:26px"></div>
+        <h3>2. Customer Details</h3>
+
+        <div class="form-grid-2">
           <label>
-            Pickup or Delivery
-            <div class="choice-row">
-              <label class="choice"><input type="radio" name="checkoutFulfilment" value="pickup" checked> Pickup</label>
-              <label class="choice"><input type="radio" name="checkoutFulfilment" value="delivery"> Delivery</label>
-            </div>
+            Full Name
+            <input id="checkoutName" type="text" maxlength="80" required>
           </label>
-          <div id="checkoutDeliveryFields" class="delivery-fields">
-            <label>Delivery Address<textarea id="checkoutDeliveryAddress" maxlength="250" placeholder="House/road/area, Dhaka"></textarea></label>
-            <p class="file-note">Delivery charge is confirmed separately depending on location.</p>
-          </div>
-          <label>Cake Message / Writing<input id="checkoutCakeMessage" type="text" maxlength="100" placeholder='e.g. "Happy Birthday Ayesha"'></label>
-          <label>Custom Instructions<textarea id="checkoutInstructions" maxlength="500" placeholder="Colours, decoration, allergies or other requests"></textarea></label>
-          <label>Reference Image (optional)<input id="checkoutReferenceImage" type="file" accept="image/*"><div class="file-note">Maximum 5 MB.</div></label>
+          <label>
+            Mobile Number
+            <input id="checkoutPhone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required>
+          </label>
+        </div>
 
-          <div class="payment-panel">
-            <div class="eyebrow">bKash Payment</div>
-            <div class="bkash-number">01712 108397</div>
-            <p class="small">Send the amount shown in your cart to this bKash number, then enter the payment information below.</p>
-            <p class="small"><strong>Never enter your bKash PIN, OTP, or password on this website.</strong></p>
-            <label>Your bKash Number<input id="checkoutBkashNumber" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required></label>
-            <label>Amount Paid (৳)<input id="checkoutPaidAmount" type="number" min="1" step="0.01" required></label>
-            <label>bKash Transaction ID (TrxID)<input id="checkoutTrxId" type="text" maxlength="40" placeholder="Enter TrxID" required></label>
-          </div>
+        <div class="form-grid-2">
+          <label>
+            Required Date
+            <input id="checkoutDate" type="date" required>
+          </label>
+          <label>
+            Preferred Time
+            <input id="checkoutTime" type="time" required>
+          </label>
+        </div>
 
-          <button class="btn btn-primary full" type="submit" id="placeOrderBtn">Place Order & Submit Payment</button>
-        </form>
-        <div id="checkoutSuccess" class="checkout-success"></div>
-      </div>
+        <label>
+          Pickup or Delivery
+          <div class="choice-row">
+            <label class="choice">
+              <input type="radio" name="checkoutFulfilment" value="pickup" checked>
+              Pickup
+            </label>
+            <label class="choice">
+              <input type="radio" name="checkoutFulfilment" value="delivery">
+              Delivery
+            </label>
+          </div>
+        </label>
+
+        <div id="checkoutDeliveryFields" class="delivery-fields">
+          <label>
+            Delivery Address
+            <textarea id="checkoutDeliveryAddress" maxlength="250" placeholder="House/road/area, Dhaka"></textarea>
+          </label>
+          <p class="file-note">Delivery charge will be confirmed based on location.</p>
+        </div>
+
+        <label>
+          Cake Message / Writing
+          <input id="checkoutCakeMessage" type="text" maxlength="100" placeholder='e.g. "Happy Birthday Ayesha"'>
+        </label>
+
+        <label>
+          Custom Instructions
+          <textarea id="checkoutInstructions" maxlength="500" placeholder="Colours, decoration, allergies or other requests"></textarea>
+        </label>
+
+        <label>
+          Reference Image (optional)
+          <input id="checkoutReferenceImage" type="file" accept="image/*">
+          <div class="file-note">Maximum 5 MB.</div>
+        </label>
+
+        <div style="height:26px"></div>
+        <h3>3. bKash Payment</h3>
+
+        <div class="payment-panel">
+          <div class="eyebrow">Pay to</div>
+          <div class="bkash-number">01712 108397</div>
+          <p class="small">Send the amount shown above to this bKash number, then enter your payment information below.</p>
+          <p class="small"><strong>Never enter your bKash PIN, OTP, or password on this website.</strong></p>
+
+          <label>
+            Your bKash Number
+            <input id="checkoutBkashNumber" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required>
+          </label>
+
+          <label>
+            Amount Paid (৳)
+            <input id="checkoutPaidAmount" type="number" min="1" step="0.01" required>
+          </label>
+
+          <label>
+            bKash Transaction ID (TrxID)
+            <input id="checkoutTrxId" type="text" maxlength="40" placeholder="Enter TrxID" required>
+          </label>
+        </div>
+
+        <button class="btn btn-primary full" type="submit" id="placeOrderBtn">
+          Submit Order
+        </button>
+
+        <p class="small" style="text-align:center;margin-top:10px">
+          One submission sends both your order details and payment confirmation.
+        </p>
+      </form>
+
+      <div id="checkoutSuccess" class="checkout-success"></div>
     </div>
   </div>
 </section>
+
 <section id="about" class="soft">
     <div class="section-inner">
       <div class="eyebrow">About Us</div>
@@ -994,7 +1057,7 @@ document.getElementById('unifiedCheckoutForm').addEventListener('submit',async e
   if(file) formData.append('referenceImage',file);
 
   const btn=document.getElementById('placeOrderBtn');
-  btn.disabled=true; btn.textContent='Submitting order…';
+  btn.disabled=true; btn.textContent='Submitting…';
 
   try{
     const res=await fetch('/api/checkout',{method:'POST',body:formData});
@@ -1011,7 +1074,7 @@ document.getElementById('unifiedCheckoutForm').addEventListener('submit',async e
     e.target.reset();
     document.getElementById('checkoutDeliveryFields').classList.remove('show');
   }catch(err){alert(err.message);}
-  finally{btn.disabled=false;btn.textContent='Place Order & Submit Payment';}
+  finally{btn.disabled=false;btn.textContent='Submit Order';}
 });
 
 renderCart();

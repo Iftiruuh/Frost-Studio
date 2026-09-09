@@ -115,3 +115,18 @@ Never ask customers for their bKash PIN, OTP, or password.
 
 ## Unified cart checkout
 Customers now use +/− on products, open one cart, and complete customer details plus bKash payment in one checkout form. There are no separate order and payment forms.
+
+
+## Single checkout form
+
+The checkout is now one single form/card.
+
+Order flow:
+1. Review cart
+2. Enter customer details
+3. Choose pickup/delivery
+4. Add optional cake message/reference image
+5. Enter bKash payment details
+6. Press one `Submit Order` button
+
+There is no separate order-submission form and no separate payment-submission form.
