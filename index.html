@@ -462,6 +462,28 @@
       .order-item .remove-btn{grid-column:1 / -1;justify-self:start}
     }
 
+
+    .cart-bar{position:sticky;top:80px;z-index:9;background:#1d1310;color:#f5dfca;border-bottom:1px solid #5c3a2b}
+    .cart-bar-inner{max-width:1100px;margin:auto;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .cart-bar button{border:0;background:#d9b894;color:#1d1310;border-radius:999px;padding:9px 16px;font-weight:800;cursor:pointer}
+    .cart-count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:white;color:#1d1310;margin-left:7px;font-size:12px}
+    .qty-card-control{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px}
+    .qty-card-control button{width:34px;height:34px;border-radius:50%;border:1px solid #4a342c;background:#fffdf9;color:#4a342c;font-size:20px;cursor:pointer}
+    .qty-card-control .card-qty{min-width:30px;text-align:center;font-weight:800}
+    .checkout-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start;margin-top:28px}
+    .checkout-card{background:#fffdf9;border:1px solid #eadfd4;border-radius:22px;padding:24px}
+    .cart-line{display:grid;grid-template-columns:1fr auto;gap:14px;border-bottom:1px solid #eee2d8;padding:10px 0}
+    .cart-line-meta{font-size:12px;color:#7b675d}
+    .summary-box{background:#1d1310;color:#f3ddc8;border-radius:16px;padding:18px;margin-top:16px}
+    .summary-row{display:flex;justify-content:space-between;gap:16px;padding:6px 0}
+    .summary-total{border-top:1px solid rgba(255,255,255,.2);margin-top:8px;padding-top:12px;font-size:20px;font-weight:800}
+    .payment-panel{background:#f8f0e8;border:1px solid #dbc4af;border-radius:16px;padding:18px;margin:18px 0}
+    .bkash-number{font-family:Georgia,serif;font-size:30px;font-weight:800;color:#4a342c;margin:8px 0}
+    .cart-empty{text-align:center;color:#7a675f;padding:18px;border:1px dashed #d8c6b7;border-radius:14px}
+    .checkout-success{display:none;margin-top:16px;padding:18px;border-radius:14px;background:#eef6f0;color:#325a3f}
+    .checkout-success.show{display:block}
+    @media(max-width:850px){.checkout-layout{grid-template-columns:1fr}}
+
     footer{
       text-align:center;
       padding:30px 22px;
@@ -492,13 +514,20 @@
       <a href="#menu">Menu</a>
       
       <a href="#order">How to Order</a>
-      <a href="#customer-order">Order</a>
-      <a href="#payment">Pay with bKash</a>
+      <a href="#checkout">Checkout</a>
+      
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
 </header>
+<div class="cart-bar">
+  <div class="cart-bar-inner">
+    <div><strong>Your Cart</strong> <span id="cartBarTotal">৳0</span></div>
+    <button type="button" id="openCartBtn">View Cart <span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</div>
+
 
 <main>
   <section class="hero" id="home">
@@ -536,7 +565,7 @@
           <h3>Chocolate Cake</h3>
           
           <div class="product-price">৳850</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -546,7 +575,7 @@
           <h3>Vanilla Cake</h3>
           
           <div class="product-price">৳750</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -556,7 +585,7 @@
           <h3>Strawberry Cake</h3>
           
           <div class="product-price">৳750</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -566,7 +595,7 @@
           <h3>Lemon Cake</h3>
           
           <div class="product-price">৳750</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -576,7 +605,7 @@
           <h3>Mocha Cake</h3>
           
           <div class="product-price">৳850</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -586,7 +615,7 @@
           <h3>Orange Cake</h3>
           
           <div class="product-price">৳750</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
       
@@ -595,7 +624,7 @@
         <div class="product-body">
           <h3>6 Inch Brownie</h3>
           <div class="product-price">৳700</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
       <article class="product-card" data-product="Assorted Brownie" data-price="1350" data-detail="">
@@ -603,7 +632,7 @@
         <div class="product-body">
           <h3>Assorted Brownie</h3>
           <div class="product-price">৳1,350</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 </div>
@@ -622,7 +651,7 @@
           <h3>Regular Icing Donut</h3>
           <div class="product-detail">per piece</div>
           <div class="product-price">৳150</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -632,7 +661,7 @@
           <h3>Exclusive Premium Donut</h3>
           <div class="product-detail">per piece</div>
           <div class="product-price">৳300</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
       </div>
@@ -651,7 +680,7 @@
           <h3>Hazelnut Moist Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳1,700</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -661,7 +690,7 @@
           <h3>Pistachio Raspberry Cake</h3>
           <div class="product-detail">1 kg</div>
           <div class="product-price">৳4,000</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -671,7 +700,7 @@
           <h3>Dubai Kunefe Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳1,800</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -681,7 +710,7 @@
           <h3>Salted Caramel Moist Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳2,000</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -691,7 +720,7 @@
           <h3>Red Velvet Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳1,500</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -701,7 +730,7 @@
           <h3>Biscoff Chocolate Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳2,100</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -711,7 +740,7 @@
           <h3>Russian Honey Cake</h3>
           <div class="product-detail">1 kg</div>
           <div class="product-price">৳4,500</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -721,7 +750,7 @@
           <h3>Chocolate Indulgence Cake</h3>
           <div class="product-detail">1 kg</div>
           <div class="product-price">৳3,000</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
 
@@ -731,7 +760,7 @@
           <h3>Chocolate Mud Cake</h3>
           <div class="product-detail">600 gm</div>
           <div class="product-price">৳1,500</div>
-          <button type="button" class="add-order-btn">Add to Order</button>
+          <div class="qty-card-control"><button type="button" class="card-minus">−</button><span class="card-qty">0</span><button type="button" class="card-plus">+</button></div>
         </div>
       </article>
       </div>
@@ -758,157 +787,74 @@
   </section>
 
   
-  <section id="customer-order" class="soft">
-    <div class="section-inner">
-      <div class="eyebrow">Customer Order</div>
-      <h2>Build your Frost Studio order</h2>
-      <p class="muted">Choose items from the menu above, enter your details, and submit your order request. Frost Studio will confirm availability and the final delivery details before payment.</p>
+  
 
-      <div class="order-layout">
-        <div class="order-panel">
-          <h3>Your details</h3>
-          <form id="customerOrderForm">
-            <div class="form-grid-2">
-              <label>
-                Full Name
-                <input id="customerName" type="text" maxlength="80" required>
-              </label>
-              <label>
-                Mobile Number
-                <input id="customerPhone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required>
-              </label>
-            </div>
 
-            <div class="form-grid-2">
-              <label>
-                Required Date
-                <input id="requiredDate" type="date" required>
-              </label>
-              <label>
-                Preferred Time
-                <input id="requiredTime" type="time" required>
-              </label>
-            </div>
 
-            <label>
-              Pickup or Delivery
-              <div class="choice-row">
-                <label class="choice"><input type="radio" name="fulfilment" value="pickup" checked> Pickup</label>
-                <label class="choice"><input type="radio" name="fulfilment" value="delivery"> Delivery</label>
-              </div>
-            </label>
 
-            <div id="deliveryFields" class="delivery-fields">
-              <label>
-                Delivery Address
-                <textarea id="deliveryAddress" maxlength="250" placeholder="House/road/area, Dhaka"></textarea>
-              </label>
-              <p class="file-note">Delivery charge is confirmed separately based on location and is not included in the menu total below.</p>
-            </div>
 
-            <label>
-              Cake Message / Writing
-              <input id="cakeMessage" type="text" maxlength="100" placeholder='e.g. "Happy Birthday Ayesha"'>
-            </label>
-
-            <label>
-              Custom Instructions
-              <textarea id="customInstructions" maxlength="500" placeholder="Colours, theme, decoration notes, allergies or other requests"></textarea>
-            </label>
-
-            <label>
-              Reference Image (optional)
-              <input id="referenceImage" type="file" accept="image/*">
-              <div class="file-note">Upload one design/reference image. Maximum 5 MB.</div>
-            </label>
-
-            <button class="btn btn-primary full" type="submit" id="submitOrderBtn">Submit Order Request</button>
-          </form>
-
-          <div id="orderSuccess" class="order-success"></div>
+  
+<section id="checkout" class="soft">
+  <div class="section-inner">
+    <div class="eyebrow">Cart & Checkout</div>
+    <h2>Complete your Frost Studio order</h2>
+    <p class="muted">Choose quantities with + and −, review your cart, then complete customer details and bKash payment in one checkout.</p>
+    <div class="checkout-layout">
+      <div class="checkout-card">
+        <h3>Your Cart</h3>
+        <div id="checkoutCartList"><div class="cart-empty">Your cart is empty.</div></div>
+        <div class="summary-box">
+          <div class="summary-row"><span>Items subtotal</span><strong id="checkoutSubtotal">৳0</strong></div>
+          <div class="summary-row"><span>Delivery</span><span>Confirmed separately</span></div>
+          <div class="summary-row summary-total"><span>Current total</span><strong id="checkoutTotal">৳0</strong></div>
         </div>
+        <div class="buttons"><a class="btn btn-secondary" href="#menu">Continue Shopping</a></div>
+      </div>
 
-        <div class="sticky-summary">
-          <div class="order-panel">
-            <h3>Your order</h3>
-            <div id="orderItems" class="order-items">
-              <div class="empty-order">No items added yet. Use “Add to Order” from the menu.</div>
-            </div>
-
-            <div class="order-summary">
-              <div class="summary-line"><span>Items subtotal</span><strong id="subtotalText">৳0</strong></div>
-              <div class="summary-line"><span>Delivery</span><span>Confirmed separately</span></div>
-              <div class="summary-line summary-total"><span>Menu total</span><strong id="totalText">৳0</strong></div>
-            </div>
-
-            <p class="admin-note">Payment is requested only after Frost Studio confirms the order. bKash checkout remains separate.</p>
+      <div class="checkout-card">
+        <h3>Customer & Payment Details</h3>
+        <form id="unifiedCheckoutForm">
+          <div class="form-grid-2">
+            <label>Full Name<input id="checkoutName" type="text" maxlength="80" required></label>
+            <label>Mobile Number<input id="checkoutPhone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required></label>
           </div>
-        </div>
+          <div class="form-grid-2">
+            <label>Required Date<input id="checkoutDate" type="date" required></label>
+            <label>Preferred Time<input id="checkoutTime" type="time" required></label>
+          </div>
+          <label>
+            Pickup or Delivery
+            <div class="choice-row">
+              <label class="choice"><input type="radio" name="checkoutFulfilment" value="pickup" checked> Pickup</label>
+              <label class="choice"><input type="radio" name="checkoutFulfilment" value="delivery"> Delivery</label>
+            </div>
+          </label>
+          <div id="checkoutDeliveryFields" class="delivery-fields">
+            <label>Delivery Address<textarea id="checkoutDeliveryAddress" maxlength="250" placeholder="House/road/area, Dhaka"></textarea></label>
+            <p class="file-note">Delivery charge is confirmed separately depending on location.</p>
+          </div>
+          <label>Cake Message / Writing<input id="checkoutCakeMessage" type="text" maxlength="100" placeholder='e.g. "Happy Birthday Ayesha"'></label>
+          <label>Custom Instructions<textarea id="checkoutInstructions" maxlength="500" placeholder="Colours, decoration, allergies or other requests"></textarea></label>
+          <label>Reference Image (optional)<input id="checkoutReferenceImage" type="file" accept="image/*"><div class="file-note">Maximum 5 MB.</div></label>
+
+          <div class="payment-panel">
+            <div class="eyebrow">bKash Payment</div>
+            <div class="bkash-number">01712 108397</div>
+            <p class="small">Send the amount shown in your cart to this bKash number, then enter the payment information below.</p>
+            <p class="small"><strong>Never enter your bKash PIN, OTP, or password on this website.</strong></p>
+            <label>Your bKash Number<input id="checkoutBkashNumber" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required></label>
+            <label>Amount Paid (৳)<input id="checkoutPaidAmount" type="number" min="1" step="0.01" required></label>
+            <label>bKash Transaction ID (TrxID)<input id="checkoutTrxId" type="text" maxlength="40" placeholder="Enter TrxID" required></label>
+          </div>
+
+          <button class="btn btn-primary full" type="submit" id="placeOrderBtn">Place Order & Submit Payment</button>
+        </form>
+        <div id="checkoutSuccess" class="checkout-success"></div>
       </div>
     </div>
-  </section>
-
-<section id="payment">
-    <div class="section-inner">
-      <div class="eyebrow">Secure Payment</div>
-      <h2>Pay with bKash</h2>
-      <p class="muted">Only make a bKash payment after Frost Studio has confirmed your order and payment amount.</p>
-
-      <div class="payment-wrap">
-        <div>
-          <div class="card">
-            <h3>bKash Payment</h3>
-            <div class="payment-methods" style="grid-template-columns:1fr">
-              <div class="method">bKash Only</div>
-            </div>
-            <div class="secure-note">
-              🔒 Frost Studio will never ask for your bKash PIN or OTP. Complete payment only through the official bKash checkout.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Order payment</h3>
-          <form id="paymentForm">
-            <label>
-              Order / Invoice Number
-              <input id="orderId" name="orderId" type="text" maxlength="40" placeholder="e.g. FS-1024" required />
-            </label>
-            <label>
-              Your Name
-              <input id="name" name="name" type="text" maxlength="50" required />
-            </label>
-            <label>
-              Email
-              <input id="email" name="email" type="email" maxlength="50" required />
-            </label>
-            <label>
-              Mobile Number
-              <input id="phone" name="phone" type="tel" maxlength="20" placeholder="01XXXXXXXXX" required />
-            </label>
-            <label>
-              City
-              <input id="city" name="city" type="text" maxlength="50" placeholder="Dhaka" required />
-            </label>
-            <label>
-              Address
-              <textarea id="address" name="address" maxlength="100" placeholder="Customer address"></textarea>
-            </label>
-            <label>
-              Payment Amount (BDT)
-              <input id="amount" name="amount" type="number" min="10" step="0.01" placeholder="e.g. 1500" required />
-            </label>
-
-            <button class="btn btn-primary full" type="submit" id="payButton">Continue to bKash</button>
-            <p class="small">The amount should match the quotation sent to you by Frost Studio.</p>
-          </form>
-          <div id="status" class="status"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="soft">
+  </div>
+</section>
+<section id="about" class="soft">
     <div class="section-inner">
       <div class="eyebrow">About Us</div>
       <h2>Welcome to Frost Studio</h2>
@@ -939,237 +885,137 @@
   © 2026 Frost Studio. Made for Sweet Moments.
 </footer>
 
+
+
 <script>
-  // -----------------------------
-  // Frost Studio customer cart
-  // -----------------------------
-  const cart = new Map();
+const cart = new Map();
+const money = v => '৳' + Number(v).toLocaleString('en-BD');
 
-  const money = value => '৳' + Number(value).toLocaleString('en-BD');
-
-  const orderItemsEl = document.getElementById('orderItems');
-  const subtotalText = document.getElementById('subtotalText');
-  const totalText = document.getElementById('totalText');
-
-  function renderCart() {
-    if (cart.size === 0) {
-      orderItemsEl.innerHTML = '<div class="empty-order">No items added yet. Use “Add to Order” from the menu.</div>';
-      subtotalText.textContent = '৳0';
-      totalText.textContent = '৳0';
-      return;
+function subtotal(){
+  let t=0;
+  for(const i of cart.values()) t += i.price*i.qty;
+  return t;
+}
+function count(){
+  let c=0;
+  for(const i of cart.values()) c += i.qty;
+  return c;
+}
+function syncCard(name, qty){
+  document.querySelectorAll('.product-card').forEach(card=>{
+    if(card.dataset.product===name){
+      const el=card.querySelector('.card-qty');
+      if(el) el.textContent=qty;
     }
-
-    let subtotal = 0;
-    orderItemsEl.innerHTML = '';
-
-    for (const [name, item] of cart.entries()) {
-      const lineTotal = item.price * item.qty;
-      subtotal += lineTotal;
-
-      const row = document.createElement('div');
-      row.className = 'order-item';
-      row.innerHTML = `
-        <div>
-          <div class="order-item-name">${name}</div>
-          <div class="order-item-meta">${item.detail ? item.detail + ' • ' : ''}${money(item.price)} each</div>
-        </div>
-        <div class="qty-control">
-          <button type="button" aria-label="Decrease quantity" data-action="minus" data-name="${name}">−</button>
-          <span class="qty-value">${item.qty}</span>
-          <button type="button" aria-label="Increase quantity" data-action="plus" data-name="${name}">+</button>
-        </div>
-        <button class="remove-btn" type="button" data-action="remove" data-name="${name}">Remove</button>
-      `;
-      orderItemsEl.appendChild(row);
-    }
-
-    subtotalText.textContent = money(subtotal);
-    totalText.textContent = money(subtotal);
-  }
-
-  document.querySelectorAll('.add-order-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      const card = button.closest('.product-card');
-      const name = card.dataset.product;
-      const price = Number(card.dataset.price);
-      const detail = card.dataset.detail || '';
-
-      if (cart.has(name)) {
-        cart.get(name).qty += 1;
-      } else {
-        cart.set(name, { price, detail, qty: 1 });
-      }
-
-      button.textContent = 'Added ✓';
-      button.classList.add('added');
-      setTimeout(() => {
-        button.textContent = 'Add to Order';
-        button.classList.remove('added');
-      }, 900);
-
-      renderCart();
-      document.getElementById('customer-order').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
   });
+}
+function renderCart(){
+  const list=document.getElementById('checkoutCartList');
+  const total=subtotal();
+  document.getElementById('cartCount').textContent=count();
+  document.getElementById('cartBarTotal').textContent=money(total);
+  document.getElementById('checkoutSubtotal').textContent=money(total);
+  document.getElementById('checkoutTotal').textContent=money(total);
+  document.getElementById('checkoutPaidAmount').value=total || '';
 
-  orderItemsEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-action]');
-    if (!btn) return;
+  if(cart.size===0){
+    list.innerHTML='<div class="cart-empty">Your cart is empty.</div>';
+    return;
+  }
+  list.innerHTML='';
+  for(const [name,item] of cart.entries()){
+    const row=document.createElement('div');
+    row.className='cart-line';
+    row.innerHTML=`<div><strong>${name}</strong><div class="cart-line-meta">${item.detail ? item.detail+' • ' : ''}${money(item.price)} each × ${item.qty}</div></div><strong>${money(item.price*item.qty)}</strong>`;
+    list.appendChild(row);
+  }
+}
 
-    const name = btn.dataset.name;
-    const action = btn.dataset.action;
-    const item = cart.get(name);
-    if (!item) return;
+document.querySelectorAll('.product-card').forEach(card=>{
+  const name=card.dataset.product;
+  const price=Number(card.dataset.price);
+  const detail=card.dataset.detail || '';
+  const plus=card.querySelector('.card-plus');
+  const minus=card.querySelector('.card-minus');
 
-    if (action === 'plus') item.qty += 1;
-    if (action === 'minus') item.qty -= 1;
-    if (action === 'remove' || item.qty <= 0) cart.delete(name);
-
+  if(plus) plus.addEventListener('click',()=>{
+    const i=cart.get(name)||{price,detail,qty:0};
+    i.qty+=1; cart.set(name,i); syncCard(name,i.qty); renderCart();
+  });
+  if(minus) minus.addEventListener('click',()=>{
+    const i=cart.get(name); if(!i) return;
+    i.qty-=1;
+    if(i.qty<=0){cart.delete(name);syncCard(name,0);}
+    else{cart.set(name,i);syncCard(name,i.qty);}
     renderCart();
   });
+});
 
-  // Prevent selecting past dates
-  const requiredDate = document.getElementById('requiredDate');
-  const today = new Date();
-  const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0,10);
-  requiredDate.min = localDate;
+document.getElementById('openCartBtn').addEventListener('click',()=>{
+  document.getElementById('checkout').scrollIntoView({behavior:'smooth',block:'start'});
+});
 
-  // Pickup / delivery
-  const deliveryFields = document.getElementById('deliveryFields');
-  document.querySelectorAll('input[name="fulfilment"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      const isDelivery = document.querySelector('input[name="fulfilment"]:checked').value === 'delivery';
-      deliveryFields.classList.toggle('show', isDelivery);
-      document.getElementById('deliveryAddress').required = isDelivery;
-    });
+const dateEl=document.getElementById('checkoutDate');
+const now=new Date();
+dateEl.min=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+
+document.querySelectorAll('input[name="checkoutFulfilment"]').forEach(r=>{
+  r.addEventListener('change',()=>{
+    const delivery=document.querySelector('input[name="checkoutFulfilment"]:checked').value==='delivery';
+    document.getElementById('checkoutDeliveryFields').classList.toggle('show',delivery);
+    document.getElementById('checkoutDeliveryAddress').required=delivery;
   });
+});
 
-  // Submit order to server
-  const customerOrderForm = document.getElementById('customerOrderForm');
-  const orderSuccess = document.getElementById('orderSuccess');
-  const submitOrderBtn = document.getElementById('submitOrderBtn');
+document.getElementById('unifiedCheckoutForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(cart.size===0){alert('Please add at least one item to your cart.');return;}
 
-  customerOrderForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+  const file=document.getElementById('checkoutReferenceImage').files[0];
+  if(file && file.size>5*1024*1024){alert('Reference image must be 5 MB or smaller.');return;}
 
-    if (cart.size === 0) {
-      alert('Please add at least one item to your order.');
-      return;
-    }
+  const fulfilment=document.querySelector('input[name="checkoutFulfilment"]:checked').value;
+  const deliveryAddress=document.getElementById('checkoutDeliveryAddress').value.trim();
+  if(fulfilment==='delivery' && !deliveryAddress){alert('Please enter delivery address.');return;}
 
-    const fileInput = document.getElementById('referenceImage');
-    const file = fileInput.files[0];
-    if (file && file.size > 5 * 1024 * 1024) {
-      alert('Reference image must be 5 MB or smaller.');
-      return;
-    }
+  const formData=new FormData();
+  formData.append('customerName',document.getElementById('checkoutName').value.trim());
+  formData.append('customerPhone',document.getElementById('checkoutPhone').value.trim());
+  formData.append('requiredDate',dateEl.value);
+  formData.append('requiredTime',document.getElementById('checkoutTime').value);
+  formData.append('fulfilment',fulfilment);
+  formData.append('deliveryAddress',deliveryAddress);
+  formData.append('cakeMessage',document.getElementById('checkoutCakeMessage').value.trim());
+  formData.append('customInstructions',document.getElementById('checkoutInstructions').value.trim());
+  formData.append('payerBkashNumber',document.getElementById('checkoutBkashNumber').value.trim());
+  formData.append('paidAmount',document.getElementById('checkoutPaidAmount').value);
+  formData.append('trxId',document.getElementById('checkoutTrxId').value.trim());
+  formData.append('items',JSON.stringify(Array.from(cart.entries()).map(([name,i])=>({name,qty:i.qty,detail:i.detail}))));
+  if(file) formData.append('referenceImage',file);
 
-    const fulfilment = document.querySelector('input[name="fulfilment"]:checked').value;
+  const btn=document.getElementById('placeOrderBtn');
+  btn.disabled=true; btn.textContent='Submitting order…';
 
-    const formData = new FormData();
-    formData.append('customerName', document.getElementById('customerName').value.trim());
-    formData.append('customerPhone', document.getElementById('customerPhone').value.trim());
-    formData.append('requiredDate', requiredDate.value);
-    formData.append('requiredTime', document.getElementById('requiredTime').value);
-    formData.append('fulfilment', fulfilment);
-    formData.append('deliveryAddress', document.getElementById('deliveryAddress').value.trim());
-    formData.append('cakeMessage', document.getElementById('cakeMessage').value.trim());
-    formData.append('customInstructions', document.getElementById('customInstructions').value.trim());
-    formData.append('items', JSON.stringify(Array.from(cart.entries()).map(([name, item]) => ({
-      name, price: item.price, detail: item.detail, qty: item.qty
-    }))));
+  try{
+    const res=await fetch('/api/checkout',{method:'POST',body:formData});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||'Unable to submit order.');
 
-    if (file) formData.append('referenceImage', file);
+    const success=document.getElementById('checkoutSuccess');
+    success.className='checkout-success show';
+    success.innerHTML=`<strong>Order submitted successfully.</strong><br>Order number: <strong>${data.orderId}</strong><br>Cart total: <strong>${money(data.subtotal)}</strong><br>TrxID: <strong>${data.trxId}</strong><br>Payment status: <strong>Awaiting verification</strong>`;
 
-    submitOrderBtn.disabled = true;
-    submitOrderBtn.textContent = 'Submitting order…';
+    cart.clear();
+    document.querySelectorAll('.card-qty').forEach(el=>el.textContent='0');
+    renderCart();
+    e.target.reset();
+    document.getElementById('checkoutDeliveryFields').classList.remove('show');
+  }catch(err){alert(err.message);}
+  finally{btn.disabled=false;btn.textContent='Place Order & Submit Payment';}
+});
 
-    try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.error || 'Unable to submit order.');
-
-      orderSuccess.className = 'order-success show';
-      orderSuccess.innerHTML = `
-        <strong>Order request received</strong><br>
-        Your Frost Studio order number is <strong>${data.orderId}</strong>.<br>
-        Menu total: <strong>${money(data.subtotal)}</strong>.<br>
-        Please keep this order number. Frost Studio will confirm availability, delivery charge (if any), and payment before the order is final.
-      `;
-
-      cart.clear();
-      renderCart();
-      customerOrderForm.reset();
-      deliveryFields.classList.remove('show');
-      document.getElementById('deliveryAddress').required = false;
-      orderSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      submitOrderBtn.disabled = false;
-      submitOrderBtn.textContent = 'Submit Order Request';
-    }
-  });
-
-  // -----------------------------
-  // bKash payment placeholder
-  // -----------------------------
-  const paymentForm = document.getElementById('paymentForm');
-  const statusBox = document.getElementById('status');
-  const payButton = document.getElementById('payButton');
-
-  function showStatus(message, type) {
-    statusBox.textContent = message;
-    statusBox.className = 'status ' + type;
-  }
-
-  if (paymentForm) {
-    paymentForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      statusBox.className = 'status';
-
-      const payload = {
-        orderId: document.getElementById('orderId').value.trim(),
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        city: document.getElementById('city').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        amount: Number(document.getElementById('amount').value)
-      };
-
-      if (!payload.orderId || !payload.name || !payload.email || !payload.phone || !payload.city || !payload.amount) {
-        showStatus('Please complete all required fields.', 'error');
-        return;
-      }
-
-      payButton.disabled = true;
-      payButton.textContent = 'Opening bKash checkout…';
-
-      try {
-        const response = await fetch('/api/pay', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        if (!response.ok || !data.paymentUrl) {
-          throw new Error(data.error || 'Unable to start bKash payment.');
-        }
-        window.location.href = data.paymentUrl;
-      } catch (error) {
-        showStatus('bKash payment is not active yet. ' + error.message, 'error');
-        payButton.disabled = false;
-        payButton.textContent = 'Continue to bKash';
-      }
-    });
-  }
+renderCart();
 </script>
+
 </body>
 </html>

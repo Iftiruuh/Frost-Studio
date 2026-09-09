@@ -7,8 +7,9 @@ const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const DATA_DIR = path.join(__dirname, 'data');
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const STORAGE_ROOT = process.env.STORAGE_ROOT || __dirname;
+const DATA_DIR = path.join(STORAGE_ROOT, 'data');
+const UPLOAD_DIR = path.join(STORAGE_ROOT, 'uploads');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -84,7 +85,9 @@ function makeOrderId() {
   return `FS-${y}${m}${d}-${rnd}`;
 }
 
-app.post('/api/orders', upload.single('referenceImage'), (req, res) => {
+
+
+app.post('/api/checkout', upload.single('referenceImage'), (req, res) => {
   try {
     const customerName = clean(req.body.customerName, 80);
     const customerPhone = clean(req.body.customerPhone, 20);
@@ -94,55 +97,51 @@ app.post('/api/orders', upload.single('referenceImage'), (req, res) => {
     const deliveryAddress = clean(req.body.deliveryAddress, 250);
     const cakeMessage = clean(req.body.cakeMessage, 100);
     const customInstructions = clean(req.body.customInstructions, 500);
+    const payerBkashNumber = clean(req.body.payerBkashNumber, 20);
+    const trxId = clean(req.body.trxId, 40).toUpperCase();
+    const paidAmount = Number(req.body.paidAmount);
 
     if (!customerName || !customerPhone || !requiredDate || !requiredTime) {
       return res.status(400).json({ error: 'Please complete all required customer details.' });
     }
-
     if (!['pickup','delivery'].includes(fulfilment)) {
       return res.status(400).json({ error: 'Invalid fulfilment option.' });
     }
     if (fulfilment === 'delivery' && !deliveryAddress) {
       return res.status(400).json({ error: 'Delivery address is required.' });
     }
-
-    let incomingItems;
-    try {
-      incomingItems = JSON.parse(req.body.items || '[]');
-    } catch {
-      return res.status(400).json({ error: 'Invalid order items.' });
+    if (!payerBkashNumber || !trxId || !Number.isFinite(paidAmount) || paidAmount <= 0) {
+      return res.status(400).json({ error: 'Please complete all bKash payment details.' });
     }
 
+    let incomingItems;
+    try { incomingItems = JSON.parse(req.body.items || '[]'); }
+    catch { return res.status(400).json({ error: 'Invalid cart data.' }); }
+
     if (!Array.isArray(incomingItems) || incomingItems.length === 0) {
-      return res.status(400).json({ error: 'Please add at least one menu item.' });
+      return res.status(400).json({ error: 'Your cart is empty.' });
     }
 
     const items = [];
     let subtotal = 0;
-
     for (const raw of incomingItems) {
       const name = clean(raw.name, 100);
       const qty = Math.max(1, Math.min(100, Number(raw.qty) || 1));
-
       if (!(name in allowedProducts)) {
         return res.status(400).json({ error: `Unknown product: ${name}` });
       }
-
-      // Server is authoritative for prices; never trust browser-submitted prices.
       const price = allowedProducts[name];
       subtotal += price * qty;
+      items.push({ name, qty, price, detail: clean(raw.detail, 40) });
+    }
 
-      items.push({
-        name,
-        qty,
-        price,
-        detail: clean(raw.detail, 40)
-      });
+    const orders = readOrders();
+    const duplicate = orders.find(o => o.payment && String(o.payment.trxId || '').toUpperCase() === trxId);
+    if (duplicate) {
+      return res.status(409).json({ error: 'This bKash TrxID has already been submitted.' });
     }
 
     const orderId = makeOrderId();
-    const orders = readOrders();
-
     const order = {
       orderId,
       createdAt: new Date().toISOString(),
@@ -159,7 +158,16 @@ app.post('/api/orders', upload.single('referenceImage'), (req, res) => {
       subtotal,
       deliveryCharge: null,
       totalConfirmed: null,
-      paymentStatus: 'Not requested',
+      paymentStatus: 'Awaiting verification',
+      payment: {
+        method: 'Manual bKash',
+        receivingNumber: '01712108397',
+        payerBkashNumber,
+        amount: paidAmount,
+        trxId,
+        submittedAt: new Date().toISOString(),
+        status: 'Awaiting verification'
+      },
       referenceImageUrl: req.file ? `/uploads/${req.file.filename}` : null
     };
 
@@ -169,11 +177,12 @@ app.post('/api/orders', upload.single('referenceImage'), (req, res) => {
     res.status(201).json({
       orderId,
       subtotal,
-      status: order.status
+      trxId,
+      paymentStatus: order.paymentStatus
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Unable to save the order.' });
+    res.status(500).json({ error: 'Unable to complete checkout.' });
   }
 });
 
@@ -188,14 +197,10 @@ app.get('/api/admin/orders', (req, res) => {
   res.json({ orders: readOrders() });
 });
 
-// Frost Studio — bKash only.
-// Live merchant checkout intentionally remains disabled until official
-// bKash Merchant API credentials are connected.
-app.post('/api/pay', (_req, res) => {
-  return res.status(503).json({
-    error: 'bKash merchant checkout is not connected yet.'
-  });
-});
+
+// Temporary manual bKash payment confirmation.
+// This is NOT an automated bKash gateway.
+// The site never collects PINs, OTPs, or passwords.
 
 app.use((err, _req, res, _next) => {
   console.error(err);

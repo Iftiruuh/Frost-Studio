@@ -73,6 +73,16 @@ async function loadOrders(){
       ${o.deliveryAddress ? `<p><strong>Delivery:</strong> ${o.deliveryAddress}</p>` : ''}
       ${o.cakeMessage ? `<p><strong>Cake message:</strong> ${o.cakeMessage}</p>` : ''}
       ${o.customInstructions ? `<p><strong>Instructions:</strong> ${o.customInstructions}</p>` : ''}
+      ${o.payment ? `
+        <div style="margin-top:14px;padding:14px;border-radius:12px;background:#f7f2ed">
+          <div class="label">bKash Payment Submission</div>
+          <p><strong>Status:</strong> ${o.payment.status}</p>
+          <p><strong>Payer Number:</strong> ${o.payment.payerBkashNumber}</p>
+          <p><strong>Amount Submitted:</strong> ${money(o.payment.amount)}</p>
+          <p><strong>TrxID:</strong> ${o.payment.trxId}</p>
+          <p><strong>Submitted:</strong> ${new Date(o.payment.submittedAt).toLocaleString()}</p>
+        </div>
+      ` : '<p><strong>Payment:</strong> Not submitted</p>'}
       <p><span class="status">${o.status}</span> Submitted ${new Date(o.createdAt).toLocaleString()}</p>
       ${o.referenceImageUrl ? `<div class="ref"><a href="${o.referenceImageUrl}" target="_blank"><img src="${o.referenceImageUrl}" alt="Reference image"></a></div>` : ''}
     </div>

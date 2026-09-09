@@ -1,0 +1,18 @@
+FROST STUDIO — UNIFIED CART + CHECKOUT UPDATE
+
+1. Unzip this package.
+2. In GitHub Frost-Studio repository replace:
+   public/index.html
+   public/admin.html
+   server.js
+   README.md
+3. Commit changes.
+4. Railway redeploys automatically.
+5. Wait for deployment Success.
+6. Refresh the live website.
+
+New flow:
+Menu → + / − quantities → View Cart → total → customer details → pickup/delivery → bKash details → one Submit button.
+
+For testing, use a fake TrxID and do not send money.
+Never collect a customer's bKash PIN, OTP, or password.
