@@ -18,7 +18,24 @@ if (!fs.existsSync(ORDERS_FILE)) fs.writeFileSync(ORDERS_FILE, '[]', 'utf8');
 
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve only the intended public website files from the repository root.
+// This matches the current GitHub layout without exposing server.js, package.json,
+// README.md, orders.json, or other private application files.
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+app.get('/index.html', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+app.get('/admin.html', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+app.get('/track.html', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'track.html'));
+});
+app.get('/frost-studio-logo.jpeg', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'frost-studio-logo.jpeg'));
+});
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 const allowedProducts = {

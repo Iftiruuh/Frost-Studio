@@ -1,46 +1,44 @@
-# Frost Studio — Final Order Management Version
+# Frost Studio — FINAL ROOT-LAYOUT FIX
 
-## Customer website
-- Menu with + / − quantities
-- One cart/checkout form
-- Pickup or delivery
-- Reference image upload
-- Manual bKash details
-- WhatsApp customer support
-- Customer order tracking at `/track.html`
+This version matches the CURRENT GitHub repository layout.
 
-## Owner dashboard
-Open `/admin.html`.
+Keep these 8 files directly on the main GitHub page:
 
-Features:
-- Search/filter orders
-- Full order history
-- `Yes, I received` confirmation
-- Preparing / Ready / Completed / Cancelled statuses
-- Manual bKash verification/rejection
-- One-click WhatsApp customer update with a pre-written message
-- Copy complete order details
-- Status history timestamps
-- Download JSON backup
-- Restore JSON backup
+- package.json
+- server.js
+- README.md
+- index.html
+- admin.html
+- track.html
+- frost-studio-logo.jpeg
+- orders.json
 
-## Data persistence
-Railway should keep:
-- `STORAGE_ROOT=/app/storage`
-- a persistent Railway volume mounted at `/app/storage`
+No `public` folder is required for this version.
 
-This keeps order data and uploaded reference images across deployments.
+## Railway settings
 
-## Customer notifications
-The dashboard can open a prepared WhatsApp message to the customer's checkout phone number.
+Keep:
+- `ADMIN_KEY` = your private owner key
+- `STORAGE_ROOT` = `/app/storage`
 
-Automatic WhatsApp sending requires an official WhatsApp Business API setup.
-Automatic Facebook Messenger notifications require a Facebook Page / Messenger API setup and customer messaging permission.
+Keep the Railway persistent volume mounted at:
+- `/app/storage`
 
-## Backup
-Use `Download Backup` regularly from the owner dashboard.
-To restore after an issue, use `Restore Backup` and select the JSON backup file.
+## Website addresses
 
-## Important security
-Never request or store customer bKash PINs, OTPs, or passwords.
-Keep the Railway `ADMIN_KEY` private.
+Customer site:
+`https://frost-studio-production.up.railway.app/`
+
+Owner dashboard:
+`https://frost-studio-production.up.railway.app/admin.html`
+
+Customer tracking:
+`https://frost-studio-production.up.railway.app/track.html`
+
+## Important
+
+Live order data is stored in the Railway persistent volume, not in the root
+`orders.json` file. Do not remove the Railway volume.
+
+The server intentionally serves only the website HTML files and logo. It does
+not expose server.js, package.json, README.md, or orders.json publicly.
