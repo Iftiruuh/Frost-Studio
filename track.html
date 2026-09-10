@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order | Frost Studio</title>
+<style>
+body{margin:0;background:#fbf7f2;color:#2d2421;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:20px}
+.box{width:min(620px,100%);background:#fffdf9;border:1px solid #eadfd4;border-radius:22px;padding:26px}
+h1,h2{font-family:Georgia,serif;color:#4a342c}
+label{display:block;font-weight:700;margin:12px 0}
+input{width:100%;padding:12px;border:1px solid #d8cabe;border-radius:10px;margin-top:6px;font:inherit}
+button{width:100%;padding:13px;border:0;border-radius:999px;background:#4a342c;color:white;font-weight:800;cursor:pointer;margin-top:10px}
+.status{margin-top:18px;padding:16px;border-radius:14px;background:#f7f0e9;display:none}
+.timeline{margin-top:12px;border-left:2px solid #d9b894;padding-left:16px}
+.timeline div{margin:10px 0}
+a{color:#4a342c}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Track Your Frost Studio Order</h1>
+  <p>Enter the order number you received and the same phone number used at checkout.</p>
+  <form id="trackForm">
+    <label>Order Number<input id="orderId" placeholder="FS-..." required></label>
+    <label>Phone Number<input id="phone" placeholder="01XXXXXXXXX" required></label>
+    <button type="submit">Track Order</button>
+  </form>
+  <div id="result" class="status"></div>
+  <p style="margin-top:20px"><a href="/">← Back to Frost Studio</a></p>
+</div>
+<script>
+const money=v=>'৳'+Number(v||0).toLocaleString('en-BD');
+document.getElementById('trackForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const orderId=document.getElementById('orderId').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const result=document.getElementById('result');
+  const res=await fetch(`/api/track?orderId=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(phone)}`);
+  const d=await res.json();
+  result.style.display='block';
+  if(!res.ok){result.innerHTML=d.error||'Order not found';return;}
+  result.innerHTML=`
+    <h2>${d.orderId}</h2>
+    <p><strong>Order status:</strong> ${d.status}</p>
+    <p><strong>Payment status:</strong> ${d.paymentStatus}</p>
+    <p><strong>Required:</strong> ${d.requiredDate} ${d.requiredTime}</p>
+    <p><strong>Fulfilment:</strong> ${d.fulfilment}</p>
+    <p><strong>Menu subtotal:</strong> ${money(d.subtotal)}</p>
+    <div class="timeline">
+      ${(d.statusHistory||[]).map(h=>`<div><strong>${h.status}</strong><br><small>${new Date(h.at).toLocaleString()}</small></div>`).join('')}
+    </div>`;
+});
+</script>
+</body>
+</html>

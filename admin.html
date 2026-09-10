@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frost Studio | Owner Dashboard</title>
+<style>
+:root{--cream:#fbf7f2;--paper:#fffdf9;--cocoa:#4a342c;--beige:#eadfd4;--text:#2d2421;--dark:#1d1310;--gold:#d9b894;--green:#eaf5ed;--red:#faeeee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--text);font-family:Arial,sans-serif}
+.wrap{max-width:1250px;margin:auto;padding:30px 18px 70px}
+h1,h2,h3{font-family:Georgia,serif;color:var(--cocoa)}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.auth,.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+input,select,button{padding:11px 13px;border:1px solid #d8cabe;border-radius:10px;font:inherit}
+button{background:var(--cocoa);color:white;cursor:pointer;font-weight:700}
+button.secondary{background:white;color:var(--cocoa)}
+button.good{background:#365d42}
+button.warn{background:#795a2d}
+button.danger{background:#7b3434}
+button:disabled{opacity:.55;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.stat{background:var(--paper);border:1px solid var(--beige);border-radius:16px;padding:16px}
+.stat .n{font-size:26px;font-weight:800;color:var(--cocoa)}
+.orders{display:grid;gap:16px}
+.order{background:var(--paper);border:1px solid var(--beige);border-radius:20px;padding:20px}
+.order-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#f1e6dc;font-size:12px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#7a675f}
+.value{font-weight:700;margin-top:2px}
+.items{margin-top:14px;border-top:1px solid #eee2d8;padding-top:12px}
+.item{display:flex;justify-content:space-between;gap:14px;padding:5px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.history{margin-top:14px;padding:12px;background:#f8f1ea;border-radius:12px}
+.history ul{margin:8px 0 0;padding-left:18px}
+.payment{margin-top:14px;padding:14px;border-radius:12px;background:#f7f2ed}
+.ref{margin-top:10px}.ref img{max-width:220px;border-radius:12px;border:1px solid var(--beige)}
+.empty{padding:30px;text-align:center;color:#7a675f}
+.searchbar{margin:18px 0;display:flex;gap:8px;flex-wrap:wrap}
+.searchbar input{flex:1;min-width:220px}
+.notice{background:#fff8e8;border:1px solid #ebd8ad;padding:12px 14px;border-radius:12px;margin:16px 0}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.stats,.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Frost Studio Orders</h1>
+      <p>Private owner dashboard: orders, payment verification, history, customer updates, backup and restore.</p>
+    </div>
+    <div class="auth">
+      <input id="adminKey" type="password" placeholder="Admin key">
+      <button id="loadBtn">Load Orders</button>
+    </div>
+  </div>
+
+  <div class="notice">
+    Customer notifications: the WhatsApp button opens a prepared message to the customer's number. Automatic sending requires the official WhatsApp Business API.
+  </div>
+
+  <div class="toolbar">
+    <button id="backupBtn" class="secondary">Download Backup</button>
+    <button id="restoreBtn" class="secondary">Restore Backup</button>
+    <input id="restoreFile" type="file" accept=".json,application/json" hidden>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Total Orders</div><div class="n" id="statTotal">0</div></div>
+    <div class="stat"><div class="label">New / Pending</div><div class="n" id="statPending">0</div></div>
+    <div class="stat"><div class="label">Preparing</div><div class="n" id="statPreparing">0</div></div>
+    <div class="stat"><div class="label">Completed</div><div class="n" id="statCompleted">0</div></div>
+  </div>
+
+  <div class="searchbar">
+    <input id="searchInput" placeholder="Search by order number, name or phone">
+    <select id="statusFilter">
+      <option value="">All statuses</option>
+      <option>Pending confirmation</option>
+      <option>Received / Confirmed</option>
+      <option>Preparing</option>
+      <option>Ready for pickup / delivery</option>
+      <option>Completed</option>
+      <option>Cancelled</option>
+    </select>
+  </div>
+
+  <div id="orders"><div class="empty">Enter your admin key and click Load Orders.</div></div>
+</div>
+
+<script>
+let allOrders = [];
+
+const money = v => '৳' + Number(v || 0).toLocaleString('en-BD');
+const ordersEl = document.getElementById('orders');
+
+function key(){ return document.getElementById('adminKey').value.trim(); }
+
+function normalizeBDPhone(phone){
+  const d = String(phone || '').replace(/\D/g,'');
+  if(d.startsWith('880')) return d;
+  if(d.startsWith('0')) return '88' + d;
+  if(d.length === 10) return '880' + d;
+  return d;
+}
+
+function orderText(o){
+  const items = o.items.map(i => `${i.name} x${i.qty}`).join(', ');
+  return `Frost Studio order ${o.orderId}\nCustomer: ${o.customerName}\nPhone: ${o.customerPhone}\nItems: ${items}\nMenu total: ${money(o.subtotal)}\nRequired: ${o.requiredDate} ${o.requiredTime}\nStatus: ${o.status}\nPayment: ${o.paymentStatus}`;
+}
+
+function customerUpdateText(o){
+  return `Hello ${o.customerName}, Frost Studio update for order ${o.orderId}: ${o.status}. Payment status: ${o.paymentStatus}. Required date: ${o.requiredDate}. Thank you.`;
+}
+
+function renderStats(){
+  document.getElementById('statTotal').textContent = allOrders.length;
+  document.getElementById('statPending').textContent = allOrders.filter(o => o.status === 'Pending confirmation').length;
+  document.getElementById('statPreparing').textContent = allOrders.filter(o => o.status === 'Preparing').length;
+  document.getElementById('statCompleted').textContent = allOrders.filter(o => o.status === 'Completed').length;
+}
+
+function filteredOrders(){
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const s = document.getElementById('statusFilter').value;
+  return allOrders.filter(o => {
+    const hay = `${o.orderId} ${o.customerName} ${o.customerPhone}`.toLowerCase();
+    return (!q || hay.includes(q)) && (!s || o.status === s);
+  });
+}
+
+function render(){
+  renderStats();
+  const orders = filteredOrders();
+  if(!orders.length){
+    ordersEl.innerHTML = '<div class="empty">No matching orders.</div>';
+    return;
+  }
+
+  ordersEl.innerHTML = orders.map(o => `
+    <div class="order">
+      <div class="order-head">
+        <div>
+          <h2 style="margin:0">${o.orderId}</h2>
+          <div style="margin-top:6px"><span class="badge">${o.status}</span> <span class="badge">${o.paymentStatus || 'Not requested'}</span></div>
+        </div>
+        <div class="label">Submitted ${new Date(o.createdAt).toLocaleString()}</div>
+      </div>
+
+      <div class="grid">
+        <div><div class="label">Customer</div><div class="value">${o.customerName}</div></div>
+        <div><div class="label">Phone</div><div class="value">${o.customerPhone}</div></div>
+        <div><div class="label">Required</div><div class="value">${o.requiredDate} ${o.requiredTime}</div></div>
+        <div><div class="label">Fulfilment</div><div class="value">${o.fulfilment}</div></div>
+      </div>
+
+      <div class="items">
+        ${o.items.map(i => `<div class="item"><span>${i.name} × ${i.qty}${i.detail ? ' ('+i.detail+')':''}</span><strong>${money(i.price*i.qty)}</strong></div>`).join('')}
+        <div class="item"><strong>Menu subtotal</strong><strong>${money(o.subtotal)}</strong></div>
+      </div>
+
+      ${o.deliveryAddress ? `<p><strong>Delivery:</strong> ${o.deliveryAddress}</p>` : ''}
+      ${o.cakeMessage ? `<p><strong>Cake message:</strong> ${o.cakeMessage}</p>` : ''}
+      ${o.customInstructions ? `<p><strong>Instructions:</strong> ${o.customInstructions}</p>` : ''}
+
+      ${o.payment ? `
+        <div class="payment">
+          <strong>bKash Payment</strong>
+          <p>Payer: ${o.payment.payerBkashNumber} · Amount submitted: ${money(o.payment.amount)} · TrxID: <strong>${o.payment.trxId}</strong></p>
+          <div class="actions">
+            <button class="good" onclick="updateOrder('${o.orderId}', null, 'Verified')">Verify Payment</button>
+            <button class="danger" onclick="updateOrder('${o.orderId}', null, 'Rejected')">Reject Payment</button>
+          </div>
+        </div>
+      ` : '<div class="payment"><strong>Payment:</strong> Not submitted</div>'}
+
+      <div class="actions">
+        <button class="good" onclick="updateOrder('${o.orderId}','Received / Confirmed',null)">✓ Yes, I received</button>
+        <button onclick="updateOrder('${o.orderId}','Preparing',null)">Preparing</button>
+        <button class="warn" onclick="updateOrder('${o.orderId}','Ready for pickup / delivery',null)">Ready</button>
+        <button class="good" onclick="updateOrder('${o.orderId}','Completed',null)">Completed</button>
+        <button class="danger" onclick="updateOrder('${o.orderId}','Cancelled',null)">Cancelled</button>
+      </div>
+
+      <div class="actions">
+        <button class="secondary" onclick="notifyWhatsApp('${o.orderId}')">Notify Customer on WhatsApp</button>
+        <button class="secondary" onclick="copyOrder('${o.orderId}')">Copy Order Details</button>
+      </div>
+
+      <div class="history">
+        <strong>Status history</strong>
+        <ul>
+          ${(o.statusHistory && o.statusHistory.length ? o.statusHistory : [{status:o.status,at:o.createdAt}]).map(h => `<li>${h.status} — ${new Date(h.at).toLocaleString()}</li>`).join('')}
+        </ul>
+      </div>
+
+      ${o.referenceImageUrl ? `<div class="ref"><a href="${o.referenceImageUrl}" target="_blank"><img src="${o.referenceImageUrl}" alt="Customer reference image"></a></div>` : ''}
+    </div>
+  `).join('');
+}
+
+async function loadOrders(){
+  const response = await fetch('/api/admin/orders', {headers:{'x-admin-key':key()}});
+  const data = await response.json();
+  if(!response.ok){
+    ordersEl.innerHTML = '<div class="empty">'+(data.error||'Could not load orders')+'</div>';
+    return;
+  }
+  allOrders = data.orders || [];
+  render();
+}
+
+async function updateOrder(orderId, status, paymentStatus){
+  const body = {};
+  if(status) body.status = status;
+  if(paymentStatus) body.paymentStatus = paymentStatus;
+
+  const response = await fetch('/api/admin/orders/' + encodeURIComponent(orderId), {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','x-admin-key':key()},
+    body:JSON.stringify(body)
+  });
+  const data = await response.json();
+  if(!response.ok){ alert(data.error || 'Update failed'); return; }
+  const idx = allOrders.findIndex(o => o.orderId === orderId);
+  if(idx >= 0) allOrders[idx] = data.order;
+  render();
+}
+
+function notifyWhatsApp(orderId){
+  const o = allOrders.find(x => x.orderId === orderId);
+  if(!o) return;
+  const phone = normalizeBDPhone(o.customerPhone);
+  const text = encodeURIComponent(customerUpdateText(o));
+  window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+}
+
+async function copyOrder(orderId){
+  const o = allOrders.find(x => x.orderId === orderId);
+  if(!o) return;
+  await navigator.clipboard.writeText(orderText(o));
+  alert('Order details copied.');
+}
+
+document.getElementById('loadBtn').addEventListener('click', loadOrders);
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('statusFilter').addEventListener('change', render);
+
+document.getElementById('backupBtn').addEventListener('click', async ()=>{
+  const res = await fetch('/api/admin/backup', {headers:{'x-admin-key':key()}});
+  if(!res.ok){ const d=await res.json(); alert(d.error||'Backup failed'); return; }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `frost-studio-orders-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('restoreBtn').addEventListener('click', ()=>document.getElementById('restoreFile').click());
+document.getElementById('restoreFile').addEventListener('change', async e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!confirm('Restore this backup? Current order data will be replaced.')) return;
+  try{
+    const parsed = JSON.parse(await file.text());
+    const res = await fetch('/api/admin/restore', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':key()},
+      body:JSON.stringify(parsed)
+    });
+    const d = await res.json();
+    if(!res.ok) throw new Error(d.error||'Restore failed');
+    alert(`Restored ${d.restored} orders.`);
+    loadOrders();
+  }catch(err){ alert(err.message); }
+});
+</script>
+</body>
+</html>
