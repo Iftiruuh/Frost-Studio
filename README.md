@@ -42,3 +42,10 @@ Live order data is stored in the Railway persistent volume, not in the root
 
 The server intentionally serves only the website HTML files and logo. It does
 not expose server.js, package.json, README.md, or orders.json publicly.
+
+
+## Support links updated
+
+- Facebook page connected: https://www.facebook.com/profile.php?id=61594357377104
+- WhatsApp support button kept active
+- WhatsApp and Facebook logos are shown in the support section and floating chat buttons
